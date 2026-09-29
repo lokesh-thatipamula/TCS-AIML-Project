@@ -84,6 +84,11 @@ class RiskSummarizerHandler(BaseHTTPRequestHandler):
                 self._send_json(404, {"error": "Schema file not found."})
             return
 
+        elif parsed_path == "/api/llm/config":
+            status = agent.synthesizer.llm_client.get_status()
+            self._send_json(200, status)
+            return
+
         # Static Web File Serving
         if parsed_path in ["", "/"]:
             file_name = "index.html"
@@ -136,6 +141,27 @@ class RiskSummarizerHandler(BaseHTTPRequestHandler):
                 self._send_json(200, benchmark_results)
             except Exception as e:
                 self._send_json(500, {"error": f"Benchmark evaluation failed: {str(e)}"})
+            return
+
+        elif parsed_path == "/api/llm/config":
+            content_len = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_len).decode("utf-8")
+            try:
+                payload = json.loads(body) if body else {}
+                provider = payload.get("provider", "local")
+                updated_status = agent.synthesizer.llm_client.update_config(provider, **payload)
+                self._send_json(200, updated_status)
+            except Exception as e:
+                self._send_json(400, {"error": str(e)})
+            return
+
+        elif parsed_path == "/api/llm/test":
+            success, msg = agent.synthesizer.llm_client.test_connection()
+            self._send_json(200, {
+                "success": success,
+                "message": msg,
+                "provider": agent.synthesizer.llm_client.active_provider
+            })
             return
 
         self._send_json(404, {"error": f"POST endpoint '{parsed_path}' not found."})

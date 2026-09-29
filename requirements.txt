@@ -1,0 +1,3 @@
+# Zero external dependencies required - standard library Python 3.9+
+# Optional packages if running advanced analytics:
+# requests>=2.31.0

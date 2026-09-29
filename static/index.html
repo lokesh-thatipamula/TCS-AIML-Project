@@ -60,6 +60,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
         AI Logic & Architecture
       </button>
+      <button class="nav-tab" data-tab="llm-tab">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        External LLM Settings
+      </button>
     </div>
   </nav>
 
@@ -385,6 +389,161 @@
             <h4>Dual-Engine Generative Capabilities</h4>
             <p><strong>Local GenAI Engine:</strong> Deterministic semantic synthesis with zero external dependencies, 0ms hallucination rate, and execution speed under 100 milliseconds.</p>
             <p><strong>External LLM Bridge:</strong> Pluggable adapter supporting Google Gemini 1.5 Flash and OpenAI GPT-4o via API keys for extended natural language dialogue.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 5: External LLM Configuration -->
+    <div id="llm-tab" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">External LLM Provider &amp; Model Configuration</h2>
+            <p class="card-desc">Switch between the built-in local engine and external cloud/local models (Google Gemini, OpenAI, Claude, Ollama)</p>
+          </div>
+          <div class="header-actions">
+            <span id="active-llm-pill" class="guardrail-tag checked">Active: Deterministic Local Engine</span>
+          </div>
+        </div>
+
+        <div class="schema-layout">
+          <!-- Left: Configuration Form -->
+          <div class="llm-form-section">
+            <div class="preset-selector-group">
+              <label for="llm-provider-select" class="form-label">Select LLM Provider:</label>
+              <select id="llm-provider-select" class="form-select">
+                <option value="local">Built-in Local GenAI Engine (Default, Zero-API Key, Ultra-fast)</option>
+                <option value="gemini">Google Gemini (Gemini 1.5 Flash / Pro)</option>
+                <option value="openai">OpenAI (GPT-4o / GPT-4o-mini)</option>
+                <option value="anthropic">Anthropic Claude (Claude 3.5 Sonnet)</option>
+                <option value="ollama">Ollama Local (Llama 3, Mistral, Qwen, DeepSeek)</option>
+                <option value="custom">Custom OpenAI-Compatible (Groq, Together, vLLM, LM Studio)</option>
+              </select>
+            </div>
+
+            <!-- Dynamic Fields Container -->
+            <div id="llm-fields-container" style="margin-top: 1rem;">
+              
+              <!-- Gemini Fields -->
+              <div id="fields-gemini" class="llm-provider-fields" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Google Gemini API Key:</label>
+                  <input type="password" id="input-gemini-key" class="form-select" placeholder="AIzaSy..." />
+                  <small style="color: var(--text-muted); font-size: 0.75rem;">Get free key at <a href="https://aistudio.google.com/" target="_blank" style="color: var(--primary);">aistudio.google.com</a></small>
+                </div>
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Model Name:</label>
+                  <select id="input-gemini-model" class="form-select">
+                    <option value="gemini-1.5-flash" selected>gemini-1.5-flash (Fast &amp; Recommended)</option>
+                    <option value="gemini-1.5-pro">gemini-1.5-pro (Deep Reasoning)</option>
+                    <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp (Experimental)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- OpenAI Fields -->
+              <div id="fields-openai" class="llm-provider-fields" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">OpenAI API Key:</label>
+                  <input type="password" id="input-openai-key" class="form-select" placeholder="sk-proj-..." />
+                  <small style="color: var(--text-muted); font-size: 0.75rem;">Get key at <a href="https://platform.openai.com/api-keys" target="_blank" style="color: var(--primary);">platform.openai.com</a></small>
+                </div>
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Model Name:</label>
+                  <select id="input-openai-model" class="form-select">
+                    <option value="gpt-4o-mini" selected>gpt-4o-mini (Cost-effective &amp; Fast)</option>
+                    <option value="gpt-4o">gpt-4o (Flagship Model)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Anthropic Fields -->
+              <div id="fields-anthropic" class="llm-provider-fields" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Anthropic API Key:</label>
+                  <input type="password" id="input-anthropic-key" class="form-select" placeholder="sk-ant-..." />
+                </div>
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Model Name:</label>
+                  <select id="input-anthropic-model" class="form-select">
+                    <option value="claude-3-5-sonnet-20241022" selected>claude-3-5-sonnet-20241022</option>
+                    <option value="claude-3-haiku-20240307">claude-3-haiku-20240307</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Ollama Fields -->
+              <div id="fields-ollama" class="llm-provider-fields" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Ollama Base URL:</label>
+                  <input type="text" id="input-ollama-url" class="form-select" value="http://localhost:11434" />
+                </div>
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Local Model Name:</label>
+                  <input type="text" id="input-ollama-model" class="form-select" value="llama3" placeholder="e.g. llama3, mistral, qwen2.5" />
+                  <small style="color: var(--text-muted); font-size: 0.75rem;">Make sure Ollama is running: <code>ollama run llama3</code></small>
+                </div>
+              </div>
+
+              <!-- Custom / Generic Fields -->
+              <div id="fields-custom" class="llm-provider-fields" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Endpoint Base URL:</label>
+                  <input type="text" id="input-custom-url" class="form-select" placeholder="https://api.groq.com/openai/v1" />
+                </div>
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">API Key (Optional if self-hosted):</label>
+                  <input type="password" id="input-custom-key" class="form-select" placeholder="API key or token" />
+                </div>
+                <div class="form-group" style="margin-bottom: 0.85rem;">
+                  <label class="form-label">Model Name:</label>
+                  <input type="text" id="input-custom-model" class="form-select" placeholder="e.g. llama-3.3-70b-versatile" />
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+              <button id="btn-test-llm" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Test Connection
+              </button>
+              <button id="btn-save-llm" class="btn btn-primary">
+                Save &amp; Apply Provider
+              </button>
+            </div>
+
+            <!-- Test status output box -->
+            <div id="llm-test-result" style="margin-top: 1rem; display: none;" class="executive-summary-box">
+              <span id="llm-test-msg"></span>
+            </div>
+
+          </div>
+
+          <!-- Right: Provider Architecture Information -->
+          <div class="schema-docs">
+            <h3>Dual-Mode GenAI Architecture</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              The system seamlessly balances speed, privacy, and advanced reasoning through dynamic model routing:
+            </p>
+            <ul>
+              <li><strong>Local Engine (Default):</strong> Generates deterministic actuarial narratives in &lt; 0.001s with zero API costs, zero internet dependency, and 100% data privacy.</li>
+              <li><strong>Commercial Cloud LLMs (Gemini / OpenAI / Claude):</strong> Enables deep conversational reasoning and extended narrative synthesis for executive dossiers.</li>
+              <li><strong>Offline Open-Source LLMs (Ollama):</strong> Run private local models (Llama 3, DeepSeek, Qwen) directly on your workstation without transmitting any data over the internet.</li>
+              <li><strong>Automatic Fallback:</strong> If an external provider experiences network latency or rate limits, the single agent automatically falls back to the deterministic local engine to uphold the &lt; 20s speed SLA.</li>
+            </ul>
+            <div style="margin-top: 1.5rem; background: var(--surface-alt); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+              <h4 style="font-size: 0.85rem; margin-bottom: 0.5rem;">Environment Variable Alternative (.env)</h4>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">
+                You can also configure models permanently using <code>.env</code> in your project directory:<br>
+                <code>GEMINI_API_KEY="AIzaSy..."</code><br>
+                <code>OPENAI_API_KEY="sk-..."</code><br>
+                See <a href="docs/EXTERNAL_LLM_GUIDE.md" target="_blank" style="color: var(--primary);">docs/EXTERNAL_LLM_GUIDE.md</a> for full documentation.
+              </p>
+            </div>
           </div>
         </div>
 

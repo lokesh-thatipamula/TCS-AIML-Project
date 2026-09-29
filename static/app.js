@@ -371,8 +371,146 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 10. External LLM Provider Management
+  const llmProviderSelect = document.getElementById("llm-provider-select");
+  const activeLlmPill = document.getElementById("active-llm-pill");
+  const btnTestLlm = document.getElementById("btn-test-llm");
+  const btnSaveLlm = document.getElementById("btn-save-llm");
+  const llmTestResult = document.getElementById("llm-test-result");
+  const llmTestMsg = document.getElementById("llm-test-msg");
+
+  const inputGeminiKey = document.getElementById("input-gemini-key");
+  const inputGeminiModel = document.getElementById("input-gemini-model");
+  const inputOpenaiKey = document.getElementById("input-openai-key");
+  const inputOpenaiModel = document.getElementById("input-openai-model");
+  const inputAnthropicKey = document.getElementById("input-anthropic-key");
+  const inputAnthropicModel = document.getElementById("input-anthropic-model");
+  const inputOllamaUrl = document.getElementById("input-ollama-url");
+  const inputOllamaModel = document.getElementById("input-ollama-model");
+  const inputCustomUrl = document.getElementById("input-custom-url");
+  const inputCustomKey = document.getElementById("input-custom-key");
+  const inputCustomModel = document.getElementById("input-custom-model");
+
+  function updateLLMFieldsVisibility(provider) {
+    document.querySelectorAll(".llm-provider-fields").forEach(el => el.style.display = "none");
+    const target = document.getElementById(`fields-${provider}`);
+    if (target) {
+      target.style.display = "block";
+    }
+  }
+
+  if (llmProviderSelect) {
+    llmProviderSelect.addEventListener("change", (e) => {
+      updateLLMFieldsVisibility(e.target.value);
+    });
+  }
+
+  async function loadLLMConfig() {
+    try {
+      const resp = await fetch("/api/llm/config");
+      if (!resp.ok) return;
+      const status = await resp.json();
+
+      if (llmProviderSelect) {
+        llmProviderSelect.value = status.provider || "local";
+        updateLLMFieldsVisibility(status.provider || "local");
+      }
+
+      if (activeLlmPill) {
+        activeLlmPill.textContent = `Active: ${status.active_provider_name}`;
+        activeLlmPill.className = status.use_external ? "guardrail-tag checked" : "guardrail-tag";
+      }
+
+      if (inputGeminiModel && status.gemini_model) inputGeminiModel.value = status.gemini_model;
+      if (inputOpenaiModel && status.openai_model) inputOpenaiModel.value = status.openai_model;
+      if (inputAnthropicModel && status.anthropic_model) inputAnthropicModel.value = status.anthropic_model;
+      if (inputOllamaUrl && status.ollama_base_url) inputOllamaUrl.value = status.ollama_base_url;
+      if (inputOllamaModel && status.ollama_model) inputOllamaModel.value = status.ollama_model;
+      if (inputCustomUrl && status.custom_base_url) inputCustomUrl.value = status.custom_base_url;
+      if (inputCustomModel && status.custom_model) inputCustomModel.value = status.custom_model;
+    } catch (err) {
+      console.warn("Could not load LLM status:", err);
+    }
+  }
+
+  if (btnTestLlm) {
+    btnTestLlm.addEventListener("click", async () => {
+      llmTestResult.style.display = "block";
+      llmTestMsg.textContent = "Testing connection to active provider...";
+      btnTestLlm.disabled = true;
+
+      try {
+        const resp = await fetch("/api/llm/test", { method: "POST" });
+        const res = await resp.json();
+        llmTestMsg.textContent = (res.success ? "✔ " : "✖ ") + res.message;
+        llmTestResult.style.borderLeftColor = res.success ? "var(--green)" : "var(--red)";
+      } catch (e) {
+        llmTestMsg.textContent = "✖ Connection error: " + e.message;
+        llmTestResult.style.borderLeftColor = "var(--red)";
+      } finally {
+        btnTestLlm.disabled = false;
+      }
+    });
+  }
+
+  if (btnSaveLlm) {
+    btnSaveLlm.addEventListener("click", async () => {
+      const provider = llmProviderSelect.value;
+      const payload = { provider };
+
+      if (provider === "gemini") {
+        if (inputGeminiKey.value.trim()) payload.gemini_key = inputGeminiKey.value.trim();
+        payload.gemini_model = inputGeminiModel.value;
+      } else if (provider === "openai") {
+        if (inputOpenaiKey.value.trim()) payload.openai_key = inputOpenaiKey.value.trim();
+        payload.openai_model = inputOpenaiModel.value;
+      } else if (provider === "anthropic") {
+        if (inputAnthropicKey.value.trim()) payload.anthropic_key = inputAnthropicKey.value.trim();
+        payload.anthropic_model = inputAnthropicModel.value;
+      } else if (provider === "ollama") {
+        payload.ollama_base_url = inputOllamaUrl.value.trim();
+        payload.ollama_model = inputOllamaModel.value.trim();
+      } else if (provider === "custom") {
+        payload.custom_base_url = inputCustomUrl.value.trim();
+        if (inputCustomKey.value.trim()) payload.custom_key = inputCustomKey.value.trim();
+        payload.custom_model = inputCustomModel.value.trim();
+      }
+
+      btnSaveLlm.disabled = true;
+      btnSaveLlm.textContent = "Applying...";
+
+      try {
+        const resp = await fetch("/api/llm/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) {
+          const err = await resp.json();
+          throw new Error(err.error || "Failed to update LLM configuration.");
+        }
+
+        const updated = await resp.json();
+        activeLlmPill.textContent = `Active: ${updated.active_provider_name}`;
+        activeLlmPill.className = updated.use_external ? "guardrail-tag checked" : "guardrail-tag";
+
+        llmTestResult.style.display = "block";
+        llmTestMsg.textContent = `✔ Successfully activated ${updated.active_provider_name}! Future summaries will use this engine.`;
+        llmTestResult.style.borderLeftColor = "var(--green)";
+      } catch (err) {
+        alert("Configuration Error: " + err.message);
+      } finally {
+        btnSaveLlm.disabled = false;
+        btnSaveLlm.textContent = "Save & Apply Provider";
+      }
+    });
+  }
+
   // Initialize
   loadProfiles();
   loadSchema();
+  loadLLMConfig();
   triggerBenchmark(); // Pre-populate benchmark tab with verified results
 });
+

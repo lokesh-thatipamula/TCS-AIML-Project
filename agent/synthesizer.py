@@ -61,7 +61,7 @@ class RiskSynthesizer:
         return {
             "executive_summary": exec_summary,
             "detailed_narrative": raw_text,
-            "generation_mode": "External LLM",
+            "generation_mode": f"External LLM ({self.llm_client.active_provider})",
             "key_takeaways": [k["indicator"] for k in evaluation.get("key_risk_indicators", [])[:4]],
             "recommended_actions": evaluation.get("recommended_conditions", [])
         }
