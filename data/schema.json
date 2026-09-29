@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InsuranceCustomerRiskProfile",
+  "description": "Standardized schema for synthetic insurance risk profiling without personal identifiable information (PII).",
+  "type": "object",
+  "required": [
+    "customer_id",
+    "policy_type",
+    "demographics",
+    "policy_details",
+    "claim_history",
+    "risk_factors"
+  ],
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_-]+$",
+      "description": "Anonymized unique customer identifier, e.g. CUST-AUTO-101"
+    },
+    "policy_type": {
+      "type": "string",
+      "enum": ["Auto", "Property", "Health", "Life"],
+      "description": "Line of insurance business"
+    },
+    "demographics": {
+      "type": "object",
+      "required": ["age", "occupation_category", "location_risk_tier", "credit_tier"],
+      "properties": {
+        "age": {
+          "type": "integer",
+          "minimum": 18,
+          "maximum": 100,
+          "description": "Customer age in years"
+        },
+        "occupation_category": {
+          "type": "string",
+          "enum": ["Professional / Desk", "Healthcare", "Trades / Manual Labor", "Commercial Driving / Transport", "High Risk / Hazardous", "Retired", "Student"],
+          "description": "Occupation risk category"
+        },
+        "location_risk_tier": {
+          "type": "string",
+          "enum": ["Low", "Moderate", "High", "Very High"],
+          "description": "Geographic risk classification (crime rate, weather events, traffic density)"
+        },
+        "credit_tier": {
+          "type": "string",
+          "enum": ["Excellent (750+)", "Good (700-749)", "Fair (650-699)", "Poor (<650)"],
+          "description": "Insurance credit rating tier"
+        },
+        "customer_tenure_years": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Years the customer has been insured with the company or prior carriers"
+        }
+      }
+    },
+    "policy_details": {
+      "type": "object",
+      "required": ["coverage_amount", "deductible"],
+      "properties": {
+        "coverage_amount": {
+          "type": "number",
+          "minimum": 1000,
+          "description": "Total policy limit or sum insured in USD"
+        },
+        "deductible": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Customer deductible in USD"
+        },
+        "policy_term_months": {
+          "type": "integer",
+          "default": 12,
+          "description": "Duration of policy in months"
+        },
+        "existing_premium": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual base premium in USD"
+        }
+      }
+    },
+    "claim_history": {
+      "type": "object",
+      "required": ["total_claims", "claims_last_3_years", "total_incurred_amount"],
+      "properties": {
+        "total_claims": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Lifetime number of filed claims"
+        },
+        "claims_last_3_years": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Claims submitted within the trailing 36 months"
+        },
+        "total_incurred_amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Aggregate dollar payout on historical claims"
+        },
+        "at_fault_claims_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Number of claims where the insured was liable"
+        },
+        "open_claims_count": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Currently unresolved claims"
+        },
+        "claims": {
+          "type": "array",
+          "description": "Itemized list of historical claims",
+          "items": {
+            "type": "object",
+            "required": ["incident_date", "claim_type", "amount_paid", "at_fault"],
+            "properties": {
+              "incident_date": { "type": "string" },
+              "claim_type": { "type": "string" },
+              "amount_paid": { "type": "number" },
+              "at_fault": { "type": "boolean" },
+              "status": { "type": "string", "enum": ["Closed", "Open", "Under Investigation"] }
+            }
+          }
+        }
+      }
+    },
+    "risk_factors": {
+      "type": "object",
+      "description": "Domain-specific risk attributes depending on policy type",
+      "properties": {
+        "telematics_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Auto: Driving behavior score (0-100)"
+        },
+        "traffic_violations_last_3_years": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Auto: Moving violations, speeding, DUI"
+        },
+        "vehicle_annual_mileage": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Auto: Annual miles driven"
+        },
+        "property_age_years": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Property: Age of the dwelling/building"
+        },
+        "roof_condition_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Property: Roof condition rating (0-10, 10 is new)"
+        },
+        "flood_zone": {
+          "type": "boolean",
+          "description": "Property: High risk FEMA flood zone designation"
+        },
+        "wildfire_risk_score": {
+          "type": "string",
+          "enum": ["Low", "Moderate", "High", "Extreme"],
+          "description": "Property: Wildfire exposure rating"
+        },
+        "security_system_installed": {
+          "type": "boolean",
+          "description": "Property: Monitored burglar/fire alarm installed"
+        },
+        "smoker_status": {
+          "type": "boolean",
+          "description": "Health/Life: Tobacco or nicotine user"
+        },
+        "bmi": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 70,
+          "description": "Health/Life: Body Mass Index"
+        },
+        "pre_existing_conditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Health/Life: Diagnosed chronic health conditions"
+        },
+        "family_medical_history_risk": {
+          "type": "string",
+          "enum": ["Standard", "Elevated", "Significant"],
+          "description": "Life: Hereditary risk rating"
+        }
+      }
+    },
+    "financial_indicators": {
+      "type": "object",
+      "properties": {
+        "debt_to_income_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2.0
+        },
+        "payment_delinquencies_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "annual_income_bracket": {
+          "type": "string",
+          "enum": ["< $35,000", "$35,000 - $75,000", "$75,000 - $150,000", "> $150,000"]
+        }
+      }
+    }
+  }
+}

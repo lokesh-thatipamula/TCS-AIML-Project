@@ -1,0 +1,73 @@
+[
+  {
+    "customer_id": "CUST-AUTO-101",
+    "expected_risk_tier": "Low / Preferred",
+    "expected_decision_contains": ["Preferred", "Approve"],
+    "expected_kri_count_max": 1,
+    "expected_mitigating_keywords": ["Clean Claims", "Credit", "Telematics"],
+    "score_range": [0, 30]
+  },
+  {
+    "customer_id": "CUST-AUTO-102",
+    "expected_risk_tier": "High / Critical Risk",
+    "expected_decision_contains": ["Decline", "Refer"],
+    "expected_kri_keywords": ["Claim Velocity", "Adverse MVR", "Credit"],
+    "score_range": [70, 100]
+  },
+  {
+    "customer_id": "CUST-AUTO-103",
+    "expected_risk_tier": "Moderate / Standard",
+    "expected_decision_contains": ["Standard", "Approve"],
+    "expected_kri_keywords": ["Single Prior Claim"],
+    "score_range": [25, 55]
+  },
+  {
+    "customer_id": "CUST-PROP-201",
+    "expected_risk_tier": "High / Critical Risk",
+    "expected_decision_contains": ["Decline", "Refer"],
+    "expected_kri_keywords": ["Flood", "Wildfire", "Roof"],
+    "score_range": [70, 100]
+  },
+  {
+    "customer_id": "CUST-PROP-202",
+    "expected_risk_tier": "Low / Preferred",
+    "expected_decision_contains": ["Preferred", "Approve"],
+    "expected_mitigating_keywords": ["Clean Claims", "alarm", "Credit"],
+    "score_range": [0, 30]
+  },
+  {
+    "customer_id": "CUST-HLTH-301",
+    "expected_risk_tier": "Low / Preferred",
+    "expected_decision_contains": ["Preferred", "Approve"],
+    "expected_mitigating_keywords": ["Clean Claims", "Body Mass Index"],
+    "score_range": [0, 30]
+  },
+  {
+    "customer_id": "CUST-HLTH-302",
+    "expected_risk_tier": ["Elevated / Substandard", "High / Critical Risk"],
+    "expected_decision_contains": ["Surcharge", "Conditions", "Refer", "Decline"],
+    "expected_kri_keywords": ["Tobacco", "Obesity"],
+    "score_range": [50, 100]
+  },
+  {
+    "customer_id": "CUST-LIFE-401",
+    "expected_risk_tier": "Low / Preferred",
+    "expected_decision_contains": ["Preferred", "Approve"],
+    "expected_mitigating_keywords": ["Clean Claims", "Credit"],
+    "score_range": [0, 30]
+  },
+  {
+    "customer_id": "CUST-LIFE-402",
+    "expected_risk_tier": "High / Critical Risk",
+    "expected_decision_contains": ["Decline", "Refer"],
+    "expected_kri_keywords": ["Tobacco", "Obesity"],
+    "score_range": [70, 100]
+  },
+  {
+    "customer_id": "CUST-AUTO-104",
+    "expected_risk_tier": ["Low / Preferred", "Moderate / Standard"],
+    "expected_decision_contains": ["Standard", "Approve", "Preferred"],
+    "expected_mitigating_keywords": ["Telematics", "Clean Claims"],
+    "score_range": [0, 45]
+  }
+]

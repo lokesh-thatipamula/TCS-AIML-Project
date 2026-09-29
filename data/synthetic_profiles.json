@@ -1,0 +1,426 @@
+[
+  {
+    "customer_id": "CUST-AUTO-101",
+    "policy_type": "Auto",
+    "demographics": {
+      "age": 42,
+      "occupation_category": "Professional / Desk",
+      "location_risk_tier": "Low",
+      "credit_tier": "Excellent (750+)",
+      "customer_tenure_years": 7.5
+    },
+    "policy_details": {
+      "coverage_amount": 250000,
+      "deductible": 1000,
+      "policy_term_months": 12,
+      "existing_premium": 1150
+    },
+    "claim_history": {
+      "total_claims": 0,
+      "claims_last_3_years": 0,
+      "total_incurred_amount": 0,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": []
+    },
+    "risk_factors": {
+      "telematics_score": 94,
+      "traffic_violations_last_3_years": 0,
+      "vehicle_annual_mileage": 9500
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.22,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "$75,000 - $150,000"
+    }
+  },
+  {
+    "customer_id": "CUST-AUTO-102",
+    "policy_type": "Auto",
+    "demographics": {
+      "age": 22,
+      "occupation_category": "Student",
+      "location_risk_tier": "High",
+      "credit_tier": "Poor (<650)",
+      "customer_tenure_years": 1.0
+    },
+    "policy_details": {
+      "coverage_amount": 100000,
+      "deductible": 500,
+      "policy_term_months": 12,
+      "existing_premium": 2400
+    },
+    "claim_history": {
+      "total_claims": 3,
+      "claims_last_3_years": 3,
+      "total_incurred_amount": 42500,
+      "at_fault_claims_count": 2,
+      "open_claims_count": 1,
+      "claims": [
+        {
+          "incident_date": "2024-03-12",
+          "claim_type": "Collision",
+          "amount_paid": 18500,
+          "at_fault": true,
+          "status": "Closed"
+        },
+        {
+          "incident_date": "2024-11-04",
+          "claim_type": "Property Damage",
+          "amount_paid": 12000,
+          "at_fault": true,
+          "status": "Closed"
+        },
+        {
+          "incident_date": "2025-07-19",
+          "claim_type": "Comprehensive",
+          "amount_paid": 12000,
+          "at_fault": false,
+          "status": "Open"
+        }
+      ]
+    },
+    "risk_factors": {
+      "telematics_score": 48,
+      "traffic_violations_last_3_years": 3,
+      "vehicle_annual_mileage": 22000
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.58,
+      "payment_delinquencies_count": 2,
+      "annual_income_bracket": "< $35,000"
+    }
+  },
+  {
+    "customer_id": "CUST-AUTO-103",
+    "policy_type": "Auto",
+    "demographics": {
+      "age": 36,
+      "occupation_category": "Healthcare",
+      "location_risk_tier": "Moderate",
+      "credit_tier": "Good (700-749)",
+      "customer_tenure_years": 3.0
+    },
+    "policy_details": {
+      "coverage_amount": 150000,
+      "deductible": 1000,
+      "policy_term_months": 12,
+      "existing_premium": 1450
+    },
+    "claim_history": {
+      "total_claims": 1,
+      "claims_last_3_years": 1,
+      "total_incurred_amount": 4500,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": [
+        {
+          "incident_date": "2024-08-20",
+          "claim_type": "Comprehensive Windshield",
+          "amount_paid": 4500,
+          "at_fault": false,
+          "status": "Closed"
+        }
+      ]
+    },
+    "risk_factors": {
+      "telematics_score": 82,
+      "traffic_violations_last_3_years": 0,
+      "vehicle_annual_mileage": 13000
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.31,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "$75,000 - $150,000"
+    }
+  },
+  {
+    "customer_id": "CUST-PROP-201",
+    "policy_type": "Property",
+    "demographics": {
+      "age": 51,
+      "occupation_category": "Commercial Driving / Transport",
+      "location_risk_tier": "Very High",
+      "credit_tier": "Fair (650-699)",
+      "customer_tenure_years": 2.0
+    },
+    "policy_details": {
+      "coverage_amount": 450000,
+      "deductible": 2500,
+      "policy_term_months": 12,
+      "existing_premium": 3200
+    },
+    "claim_history": {
+      "total_claims": 2,
+      "claims_last_3_years": 2,
+      "total_incurred_amount": 88000,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": [
+        {
+          "incident_date": "2023-09-14",
+          "claim_type": "Water Back-Up",
+          "amount_paid": 34000,
+          "at_fault": false,
+          "status": "Closed"
+        },
+        {
+          "incident_date": "2025-01-22",
+          "claim_type": "Wind & Hail Roof Damage",
+          "amount_paid": 54000,
+          "at_fault": false,
+          "status": "Closed"
+        }
+      ]
+    },
+    "risk_factors": {
+      "property_age_years": 44,
+      "roof_condition_score": 3.5,
+      "flood_zone": true,
+      "wildfire_risk_score": "Extreme",
+      "security_system_installed": false
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.45,
+      "payment_delinquencies_count": 1,
+      "annual_income_bracket": "$35,000 - $75,000"
+    }
+  },
+  {
+    "customer_id": "CUST-PROP-202",
+    "policy_type": "Property",
+    "demographics": {
+      "age": 48,
+      "occupation_category": "Professional / Desk",
+      "location_risk_tier": "Low",
+      "credit_tier": "Excellent (750+)",
+      "customer_tenure_years": 9.0
+    },
+    "policy_details": {
+      "coverage_amount": 600000,
+      "deductible": 2000,
+      "policy_term_months": 12,
+      "existing_premium": 2100
+    },
+    "claim_history": {
+      "total_claims": 0,
+      "claims_last_3_years": 0,
+      "total_incurred_amount": 0,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": []
+    },
+    "risk_factors": {
+      "property_age_years": 6,
+      "roof_condition_score": 9.5,
+      "flood_zone": false,
+      "wildfire_risk_score": "Low",
+      "security_system_installed": true
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.24,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "> $150,000"
+    }
+  },
+  {
+    "customer_id": "CUST-HLTH-301",
+    "policy_type": "Health",
+    "demographics": {
+      "age": 28,
+      "occupation_category": "Healthcare",
+      "location_risk_tier": "Low",
+      "credit_tier": "Good (700-749)",
+      "customer_tenure_years": 4.0
+    },
+    "policy_details": {
+      "coverage_amount": 500000,
+      "deductible": 1500,
+      "policy_term_months": 12,
+      "existing_premium": 3800
+    },
+    "claim_history": {
+      "total_claims": 0,
+      "claims_last_3_years": 0,
+      "total_incurred_amount": 0,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": []
+    },
+    "risk_factors": {
+      "smoker_status": false,
+      "bmi": 22.8,
+      "pre_existing_conditions": []
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.26,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "$75,000 - $150,000"
+    }
+  },
+  {
+    "customer_id": "CUST-HLTH-302",
+    "policy_type": "Health",
+    "demographics": {
+      "age": 57,
+      "occupation_category": "Trades / Manual Labor",
+      "location_risk_tier": "Moderate",
+      "credit_tier": "Fair (650-699)",
+      "customer_tenure_years": 2.0
+    },
+    "policy_details": {
+      "coverage_amount": 250000,
+      "deductible": 3000,
+      "policy_term_months": 12,
+      "existing_premium": 6500
+    },
+    "claim_history": {
+      "total_claims": 2,
+      "claims_last_3_years": 2,
+      "total_incurred_amount": 32000,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": [
+        {
+          "incident_date": "2023-11-05",
+          "claim_type": "Emergency Outpatient",
+          "amount_paid": 14000,
+          "at_fault": false,
+          "status": "Closed"
+        },
+        {
+          "incident_date": "2024-06-18",
+          "claim_type": "Specialist Surgery",
+          "amount_paid": 18000,
+          "at_fault": false,
+          "status": "Closed"
+        }
+      ]
+    },
+    "risk_factors": {
+      "smoker_status": true,
+      "bmi": 36.8,
+      "pre_existing_conditions": ["Hypertension", "Type II Diabetes", "Sleep Apnea"]
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.42,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "$35,000 - $75,000"
+    }
+  },
+  {
+    "customer_id": "CUST-LIFE-401",
+    "policy_type": "Life",
+    "demographics": {
+      "age": 33,
+      "occupation_category": "Professional / Desk",
+      "location_risk_tier": "Low",
+      "credit_tier": "Excellent (750+)",
+      "customer_tenure_years": 6.0
+    },
+    "policy_details": {
+      "coverage_amount": 1000000,
+      "deductible": 0,
+      "policy_term_months": 12,
+      "existing_premium": 850
+    },
+    "claim_history": {
+      "total_claims": 0,
+      "claims_last_3_years": 0,
+      "total_incurred_amount": 0,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": []
+    },
+    "risk_factors": {
+      "smoker_status": false,
+      "bmi": 23.5,
+      "pre_existing_conditions": [],
+      "family_medical_history_risk": "Standard"
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.18,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "> $150,000"
+    }
+  },
+  {
+    "customer_id": "CUST-LIFE-402",
+    "policy_type": "Life",
+    "demographics": {
+      "age": 62,
+      "occupation_category": "High Risk / Hazardous",
+      "location_risk_tier": "High",
+      "credit_tier": "Fair (650-699)",
+      "customer_tenure_years": 1.5
+    },
+    "policy_details": {
+      "coverage_amount": 750000,
+      "deductible": 0,
+      "policy_term_months": 12,
+      "existing_premium": 4200
+    },
+    "claim_history": {
+      "total_claims": 1,
+      "claims_last_3_years": 1,
+      "total_incurred_amount": 55000,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": [
+        {
+          "incident_date": "2024-02-14",
+          "claim_type": "Critical Illness Payout",
+          "amount_paid": 55000,
+          "at_fault": false,
+          "status": "Closed"
+        }
+      ]
+    },
+    "risk_factors": {
+      "smoker_status": true,
+      "bmi": 35.4,
+      "pre_existing_conditions": ["Coronary Artery Disease", "COPD"],
+      "family_medical_history_risk": "Significant"
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.48,
+      "payment_delinquencies_count": 1,
+      "annual_income_bracket": "$35,000 - $75,000"
+    }
+  },
+  {
+    "customer_id": "CUST-AUTO-104",
+    "policy_type": "Auto",
+    "demographics": {
+      "age": 21,
+      "occupation_category": "Student",
+      "location_risk_tier": "Moderate",
+      "credit_tier": "Good (700-749)",
+      "customer_tenure_years": 1.0
+    },
+    "policy_details": {
+      "coverage_amount": 100000,
+      "deductible": 1000,
+      "policy_term_months": 12,
+      "existing_premium": 1800
+    },
+    "claim_history": {
+      "total_claims": 0,
+      "claims_last_3_years": 0,
+      "total_incurred_amount": 0,
+      "at_fault_claims_count": 0,
+      "open_claims_count": 0,
+      "claims": []
+    },
+    "risk_factors": {
+      "telematics_score": 91,
+      "traffic_violations_last_3_years": 0,
+      "vehicle_annual_mileage": 8000
+    },
+    "financial_indicators": {
+      "debt_to_income_ratio": 0.28,
+      "payment_delinquencies_count": 0,
+      "annual_income_bracket": "< $35,000"
+    }
+  }
+]
