@@ -1,25 +1,24 @@
 """
-Vercel Serverless Entry Point
-Insurance Automated Risk Profile Summarizer - Single-Agent GenAI Underwriting System
+Vercel Serverless Entry Point — class-based BaseHTTPRequestHandler format
+Insurance Automated Risk Profile Summarizer
 """
 
 import json
 import os
 import sys
 import mimetypes
+from http.server import BaseHTTPRequestHandler
 
-# Ensure the project root is on sys.path so agent/ and data/ are importable
+# Ensure the project root is on sys.path
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from agent.risk_agent import RiskAgent
-from agent.llm_client import LLMClient
 
 STATIC_DIR = os.path.join(ROOT, "static")
 DATA_DIR = os.path.join(ROOT, "data")
 
-# Module-level singleton — shared across warm invocations
 _agent = None
 
 
@@ -30,35 +29,40 @@ def get_agent():
     return _agent
 
 
-def _send(status, body, content_type="application/json"):
-    headers = {
-        "Content-Type": content_type,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-    }
-    return {"statusCode": status, "headers": headers, "body": body}
+class handler(BaseHTTPRequestHandler):
 
+    def _cors_headers(self, content_type="application/json"):
+        self.send_header("Content-Type", content_type)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
-def _json(status, data):
-    return _send(status, json.dumps(data, indent=2))
+    def _send_json(self, status, data):
+        body = json.dumps(data, indent=2).encode("utf-8")
+        self.send_response(status)
+        self._cors_headers("application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
+    def _send_text(self, status, body_str, content_type="text/html; charset=utf-8"):
+        body = body_str.encode("utf-8") if isinstance(body_str, str) else body_str
+        self.send_response(status)
+        self._cors_headers(content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
-def handler(request, context=None):
-    """Vercel serverless handler — compatible with both legacy dict and new Request formats."""
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self._cors_headers("text/plain")
+        self.end_headers()
 
-    method = request.get("method", "GET").upper()
-    path = request.get("path", "/").split("?")[0]
-    body_raw = request.get("body", "") or ""
+    def do_GET(self):
+        path = self.path.split("?")[0]
 
-    # ─── CORS preflight ────────────────────────────────────────────────────────
-    if method == "OPTIONS":
-        return _send(204, "", "text/plain")
-
-    # ─── GET routes ────────────────────────────────────────────────────────────
-    if method == "GET":
         if path == "/api/health":
-            return _json(200, {
+            return self._send_json(200, {
                 "status": "healthy",
                 "service": "Insurance Automated Risk Profile Summarizer",
                 "version": "1.0.0",
@@ -71,23 +75,25 @@ def handler(request, context=None):
             p = os.path.join(DATA_DIR, "synthetic_profiles.json")
             if os.path.exists(p):
                 with open(p, encoding="utf-8") as f:
-                    return _json(200, json.load(f))
-            return _json(404, {"error": "Profiles file not found."})
+                    return self._send_json(200, json.load(f))
+            return self._send_json(404, {"error": "Profiles file not found."})
 
         if path == "/api/schema":
             p = os.path.join(DATA_DIR, "schema.json")
             if os.path.exists(p):
                 with open(p, encoding="utf-8") as f:
-                    return _json(200, json.load(f))
-            return _json(404, {"error": "Schema file not found."})
+                    return self._send_json(200, json.load(f))
+            return self._send_json(404, {"error": "Schema file not found."})
 
         if path == "/api/llm/config":
             status = get_agent().synthesizer.llm_client.get_status()
-            return _json(200, status)
+            return self._send_json(200, status)
 
-        # Serve static files (HTML / CSS / JS)
+        # Serve static files
         if path in ["", "/"]:
             file_name = "index.html"
+        elif path.startswith("/static/"):
+            file_name = path[len("/static/"):]
         else:
             file_name = path.lstrip("/")
 
@@ -98,61 +104,56 @@ def handler(request, context=None):
                 content_type = "application/octet-stream"
             with open(file_path, "rb") as f:
                 content = f.read()
-            try:
-                body = content.decode("utf-8")
-                return _send(200, body, content_type)
-            except UnicodeDecodeError:
-                import base64
-                return {
-                    "statusCode": 200,
-                    "headers": {"Content-Type": content_type},
-                    "body": base64.b64encode(content).decode("ascii"),
-                    "isBase64Encoded": True,
-                }
+            self.send_response(200)
+            self._cors_headers(content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+            return
 
-        return _json(404, {"error": f"Not found: {path}"})
+        return self._send_json(404, {"error": f"Not found: {path}"})
 
-    # ─── POST routes ───────────────────────────────────────────────────────────
-    if method == "POST":
+    def do_POST(self):
+        path = self.path.split("?")[0]
+        length = int(self.headers.get("Content-Length", 0))
+        body_raw = self.rfile.read(length).decode("utf-8") if length else ""
+
         if path == "/api/summarize":
             if not body_raw:
-                return _json(400, {"error": "Empty request body."})
+                return self._send_json(400, {"error": "Empty request body."})
             try:
                 payload = json.loads(body_raw)
             except json.JSONDecodeError as e:
-                return _json(400, {"error": f"Invalid JSON: {e}"})
+                return self._send_json(400, {"error": f"Invalid JSON: {e}"})
             try:
                 result = get_agent().process(payload)
-                return _json(200, result)
+                return self._send_json(200, result)
             except Exception as e:
-                return _json(500, {"error": f"Agent failed: {e}"})
-
-        if path == "/api/evaluate":
-            try:
-                # Run lightweight benchmark inline
-                from tests.benchmark import run_benchmark
-                results = run_benchmark()
-                return _json(200, results)
-            except Exception as e:
-                return _json(500, {"error": str(e)})
+                return self._send_json(500, {"error": f"Agent failed: {e}"})
 
         if path == "/api/llm/config":
             try:
                 payload = json.loads(body_raw) if body_raw else {}
                 provider = payload.get("provider", "local")
                 updated = get_agent().synthesizer.llm_client.update_config(provider, **payload)
-                return _json(200, updated)
+                return self._send_json(200, updated)
             except Exception as e:
-                return _json(400, {"error": str(e)})
+                return self._send_json(400, {"error": str(e)})
 
         if path == "/api/llm/test":
             success, msg = get_agent().synthesizer.llm_client.test_connection()
-            return _json(200, {
+            return self._send_json(200, {
                 "success": success,
                 "message": msg,
                 "provider": get_agent().synthesizer.llm_client.active_provider
             })
 
-        return _json(404, {"error": f"POST endpoint '{path}' not found."})
+        if path == "/api/evaluate":
+            try:
+                from tests.benchmark import run_benchmark
+                results = run_benchmark()
+                return self._send_json(200, results)
+            except Exception as e:
+                return self._send_json(500, {"error": str(e)})
 
-    return _json(405, {"error": f"Method '{method}' not allowed."})
+        return self._send_json(404, {"error": f"POST endpoint '{path}' not found."})
